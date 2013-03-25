@@ -8,10 +8,10 @@
  * Receive pin is the sensor pin - try different amounts of foil/metal on this pin
  */
 
-const int NUM_SENSORS = 2;
+const int NUM_SENSORS = 5;
 int SAMPLES = 30;
 const int AUTOCAL = 0xFFFFFFFF;
-int THRESHOLDS[NUM_SENSORS] = {1000,1000};
+int THRESHOLDS[NUM_SENSORS] = {200,200,200,200,200};
 CapacitiveSensor *sensors[NUM_SENSORS];
 int states[NUM_SENSORS]; // keeps track of the state of each sensor as an int code: 0=off, 1=on
 
@@ -22,6 +22,12 @@ void setup() {
   sensors[0]->set_CS_AutocaL_Millis(AUTOCAL);
   sensors[1] = new CapacitiveSensor(13,12);
   sensors[1]->set_CS_AutocaL_Millis(AUTOCAL);
+  sensors[2] = new CapacitiveSensor(8,9);
+  sensors[2]->set_CS_AutocaL_Millis(AUTOCAL);
+  sensors[3] = new CapacitiveSensor(0,1);
+  sensors[3]->set_CS_AutocaL_Millis(AUTOCAL);
+  sensor[4] = new CapacitiveSensor(6,7);
+  sensors[4]->set_CS_AutocaL_Millis(AUTOCAL);
   Serial.begin(9600); 
 }
 
@@ -33,7 +39,7 @@ void loop() {
        If the new code is different, update the current state code and write a control message to the serial port. */
     for(int i=0; i<NUM_SENSORS; i++){
       int datum = sensors[i]->capacitiveSensor(SAMPLES);
-      //Serial.println(datum); //DEBUG
+      //Serial.print((String)datum + ","); //DEBUG
       int ncode = 0;
       
       if(datum<THRESHOLDS[i]){
@@ -47,6 +53,7 @@ void loop() {
         Serial.println((String)(10*(i+1) + ncode));
       }
     }
+    //Serial.println(); //DEBUG
     
     /*
     long total1 =  cs1.capacitiveSensor(30); //TODO (david) wtf is the 30 for?
